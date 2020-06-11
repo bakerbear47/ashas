@@ -7,6 +7,7 @@
   int buttonClick = 13;  //Here is the pin which the click button from the joystick has been put in to, defined.
   int potPin = 34;  //Here is the pin which the potentiometer has been put in to, defined.
   int potVal;
+  int potOutVal;
   int prevX;
   int prevY;
   int tolerance = 20;
@@ -49,7 +50,7 @@ void direction(int horizontal, int vertical){// heres a class for the joystick w
   }
 }
 
-void speed(int Speed){ //heres a class over the potentiometer which defines the speed through 4 stages.
+void speed(int potOutVal){ //heres a class over the potentiometer which defines the speed through 4 stages.
   /*if (Speed < 1000){
     udp.broadcastTo("speed 1", 7000);
   }  (Speed >1000 || Speed < 2000){
@@ -59,24 +60,30 @@ void speed(int Speed){ //heres a class over the potentiometer which defines the 
   }Speed > 3000 || Speed <= 4095){ 
     udp.broadcastTo("speed 9", 7000);
   }*/
-  switch(Speed){
-      case 1:
+  switch(potOutVal){
+      case 0:
           udp.broadcastTo("s1", 7000);
-          Serial.println("speed1");
+          Serial.println("s1");
               break;
-      case 2:
+      case 1:
           udp.broadcastTo("s2", 7000);
-          Serial.println("speed2");
+          Serial.println("s2");
+      break;
+      case 2:
+          udp.broadcastTo("s3", 7000);
+          Serial.println("s3");
       break;
       case 3:
-          udp.broadcastTo("s3", 7000);
-          Serial.println("speed3");
-      break;
-      case 4:
           udp.broadcastTo("s4", 7000);
-          Serial.println("speed4");
+          Serial.println("s4");
       break;
-      
+      /*
+      default:
+      udp.broadcastTo("s2", 7000);
+          Serial.println("speed2");*/
+
+
+          
       /*case 2001 ... 3000:
           udp.broadcastTo("speed 7", 7000);
           Serial.println("speed3");
@@ -101,8 +108,14 @@ void loop() {
     Serial.println("Clicked");
   }
   potVal = analogRead(potPin);// here it reads the input from the potentiometer and puts it in the speed class
+  Serial.println(potVal);
+  potOutVal = map (potVal, 0, 4095, 0, 3);
+  speed(potOutVal);
+  //Serial.println(speed(potOutVal));
+
   
-  if(potVal < 1000){
+
+  /*if(potVal < 1000){
       speed(1);
   }
   if(potVal >= 1000 || potVal < 2000){
@@ -113,5 +126,5 @@ void loop() {
   }
   if(potVal >= 3000 || potVal <= 4095){
       speed(4);
-  }
+  }*/
 }
